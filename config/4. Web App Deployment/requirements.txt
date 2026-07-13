@@ -1,0 +1,45 @@
+# =============================================================================
+# AegisTrader -- requirements.txt
+# -----------------------------------------------------------------------------
+# WHERE THIS FILE GOES:
+#   Put it in the deployment folder, next to app.py:
+#   "...\DIPLOMATIKI\Code Files\4. Web App Deployment\requirements.txt"
+#
+# WHY VERSIONS ARE PINNED:
+#   The 12 .joblib artifacts were pickled inside thesis_env. To unpickle them
+#   identically on Streamlit Community Cloud (Linux), the ML/data libraries must
+#   match the training versions -- otherwise scikit-learn may raise
+#   InconsistentVersionWarning or fail to load the models.
+#
+# DEPLOYMENT NOTES:
+#   All versions below are pinned to the training environment (thesis_env), so the
+#   .joblib artifacts unpickle identically on the cloud. In particular
+#   scikit-learn is pinned to 1.8.0 on purpose: a newer 1.9.0 exists on PyPI and
+#   an auto-upgrade would risk breaking model loading.
+#
+# NOTE on Streamlit Community Cloud:
+#   Set the app's Python version to 3.12 (Advanced settings) to match the local
+#   cp312 build and guarantee wheels exist for numpy 2.2.6 / numba 0.61.2.
+# =============================================================================
+
+# --- Web app framework ---
+streamlit==1.55.0
+
+# --- Core data stack (pinned to training versions) ---
+numpy==2.2.6            # unique fit: numba needs numpy<=2.2.x, pandas-ta needs >=2.2.6
+pandas==2.3.3
+scipy==1.16.0
+
+# --- ML: REQUIRED to unpickle the sklearn estimators inside the .joblib files ---
+scikit-learn==1.8.0     # matches training env; released 2025-12-10, supports py3.11-3.14
+joblib==1.5.3
+
+# --- Feature pipeline (frozen add_indicators.py imports pandas_ta -> numba) ---
+pandas-ta==0.4.71b0     # verified on PyPI (py3-none-any wheel, published 2025-09-14)
+numba==0.61.2
+
+# --- Market data ---
+yfinance==1.2.0
+
+# --- Excel reader for AegisTrader_Asset_Mapping.xlsx (pandas.read_excel) ---
+openpyxl==3.1.5
